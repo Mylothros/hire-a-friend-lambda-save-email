@@ -58,16 +58,13 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
               then
-                aws ssm put-parameter --name "NAME" --value "production" --type "String" --overwrite
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
                 aws cloudformation deploy --template-file packaged.development.yaml --stack-name $AWS_BUCKET_NAME --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
               then
-                aws ssm put-parameter --name "NAME" --value "staging" --type "String" --overwrite
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
                 aws cloudformation deploy --template-file packaged.development.yaml --stack-name $AWS_BUCKET_NAME --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_STAGING --region us-east-1 
             else
-              aws ssm put-parameter --name "NAME" --value "develop" --type "String" --overwrite
               aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
               aws cloudformation deploy --template-file packaged.development.yaml --stack-name $AWS_BUCKET_NAME --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Develop S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
             fi
