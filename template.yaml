@@ -8,10 +8,6 @@ Parameters:
     Type: String
     Description: Name of the stage of the api-gateway
     Default: Dev
-    AllowedValues:
-      - Dev
-      - Stage
-      - Prod
   S3BucketPolicy:
     Type: String
     Description: S3 policy for writing orders objects
