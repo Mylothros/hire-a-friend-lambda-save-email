@@ -43,8 +43,6 @@ aliases:
       name: Build Project
       command: |
         npm install
-        CI=false npm run build
-        cd build
         zip ../build.zip -r * .[^.]*
         echo "Build successful"
 jobs:
@@ -68,7 +66,6 @@ jobs:
       - attach_workspace:
           at: ./
       - *install-aws-cli
-      - *build-project
       - run:
           name: Deploy to aws lambda
           command: |

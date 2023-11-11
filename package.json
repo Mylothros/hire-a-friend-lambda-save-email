@@ -9,7 +9,7 @@
       "aws-sdk": "^2.720.0"
     },
     "scripts": {
-      "build": "npm install",
+      "build": "sam build --template template.yaml",
       "run": "sam local start-api",
       "debug": "sam local start-api -d 5678 --template template.yaml"
     }
