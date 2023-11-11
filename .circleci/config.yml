@@ -46,25 +46,11 @@ aliases:
         zip ../build.zip -r * .[^.]*
         echo "Build successful"
 jobs:
-  build:
-    executor: app-executor
-    steps:
-      - checkout
-      - *show-current-branch-name
-      - *restore-cache
-      - *install-dependencies
-      - *save-cache
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - artifacts
-
   deploy-to-aws-lambda:
     executor: app-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: ./
+      - *build-project
       - *install-aws-cli
       - run:
           name: Deploy to aws lambda
@@ -84,7 +70,4 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build
       - deploy-to-aws-lambda:
-          requires:
-            - build
