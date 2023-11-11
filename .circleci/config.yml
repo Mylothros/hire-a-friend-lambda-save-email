@@ -67,6 +67,11 @@ jobs:
           at: ./
       - *install-aws-cli
       - run:
+          name: Debug Environment Variables
+          command: |
+            echo "AWS_BUCKET_NAME: $AWS_BUCKET_NAME"
+            echo "AWS_BUCKET_POLICY: $AWS_BUCKET_POLICY"
+      - run:
           name: Deploy to aws lambda
           command: |
             echo $AWS_BUCKET_NAME
