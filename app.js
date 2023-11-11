@@ -3,8 +3,8 @@ const AWS = require("aws-sdk");
 const upload = async (data) => {
   try {
     const s3 = new AWS.S3({ region: "us-east-1" });
-    const bucketName = 'hire-a-friend-emails-' + process.env.NAME;
-    const objectKey = 'emails';
+    const bucketName = 'hire-a-friend-emails';
+    const objectKey = 'emails' + process.env.NAME;
 
     try {
       await s3.headObject({ Bucket: bucketName, Key: objectKey }).promise();
