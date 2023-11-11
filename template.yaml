@@ -7,11 +7,11 @@ Parameters:
   Stage:
     Type: String
     Description: Name of the stage of the api-gateway
-    Default: Dev
+    Default: Develop
     AllowedValues:
-      - Dev
-      - Stage
-      - Prod
+      - Develop
+      - Staging
+      - Production
   S3BucketPolicy:
     Type: String
     Description: S3 policy for writing orders objects
@@ -42,6 +42,9 @@ Resources:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeployment
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
