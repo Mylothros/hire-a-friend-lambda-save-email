@@ -60,12 +60,12 @@ jobs:
               then
                 export STAGE="Production"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
-                aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
+                aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
               then
                 export STAGE="Staging"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
-                aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
+                aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
             else
               export STAGE="Develop"
               aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
