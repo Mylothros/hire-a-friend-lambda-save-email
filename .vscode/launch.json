@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Hire-A-Friend-Lambda-Save-Emails",
+      "type": "node",
+      "request": "attach",
+      //"preLaunchTask": "Debug Hire-A-Friend-Lambda-Save-Emails Lambda Function",
+      "port": 5678,
+      "address": "localhost",
+      "localRoot": "${workspaceRoot}/",
+      "remoteRoot": "/var/task",
+      "protocol": "inspector",
+      "skipFiles": [
+        "/var/runtime/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "stopOnEntry": true
+    }
+  ]
+}
