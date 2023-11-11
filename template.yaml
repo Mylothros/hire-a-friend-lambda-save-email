@@ -42,6 +42,9 @@ Resources:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeployment
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
