@@ -79,4 +79,6 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy-to-aws-lambda
+      - deploy-to-aws-lambda:
+          requires:
+            - build
