@@ -1,0 +1,82 @@
+orbs:
+  slack: circleci/slack@4.1
+version: '2.1'
+executors:
+  app-executor:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:1.3.9
+
+aliases:
+  - &show-current-branch-name
+    run:
+      name: Show current branch
+      command: echo ${CIRCLE_BRANCH}
+  - &restore-cache
+    restore_cache:
+      keys: 
+        - app-{{ checksum "package.json" }}
+        - app-
+  - &install-dependencies
+    run:
+      name: Install dependecies
+      command: |
+        mkdir -p artifacts
+        npm install
+  - &save-cache
+    save_cache:
+      paths: 
+        - node_modules
+      key: app-{{ checksum "package.json" }}
+  - &install-aws-cli
+    run:
+      name: Installing aws cli
+      working_directory: /
+      command: |
+        sudo apt-get -y -qq update
+        sudo apt-get install -y awscli
+  - &build-project
+    run:
+      name: Build Project
+      command: |
+        npm install
+        CI=false npm run build
+        cd build
+        zip ../build.zip -r * .[^.]*
+        echo "Build successful"
+jobs:
+  build:
+    executor: app-executor
+    steps:
+      - checkout
+      - *show-current-branch-name
+      - *restore-cache
+      - *install-dependencies
+      - *save-cache
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - artifacts
+
+  deploy-to-aws-lambda:
+    executor: app-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - *install-aws-cli
+      - *build-project
+      - run:
+          name: Deploy to aws lambda
+          command: |
+            aws cloudformation package --template-file template.yaml --s3-bucket ${AWS_BUCKET_NAME} --output-template-file packaged.development.yaml |
+            aws cloudformation deploy --template-file packaged.development.yaml --stack-name ${AWS_BUCKET_NAME} --capabilities CAPABILITY_IAM --s3-bucket ${AWS_BUCKET_NAME} --parameter-overrides Stage=Dev, S3BucketPolicy=${AWS_BUCKET_NAME} --region us-east-1 
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy-to-aws-lambda
