@@ -28,7 +28,7 @@ Globals:
       AllowOrigin: "'*'"
 
 Resources:
-  HireAFriendSaveEmailsFunctionDevelop:
+  HireAFriendSaveEmailsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
@@ -36,60 +36,16 @@ Resources:
       Runtime: nodejs18.x
       Policies: !Ref S3BucketPolicy
       Events:
-        HireAFriendApiDevelop:
+        HireAFriendApi:
            Type: Api
            Properties:
             Path: /getemails
             Method: POST
-            RestApiId: !Ref ApiDeploymentDevelop
+            RestApiId: !Ref ApiDeployment
       Environment:
         Variables:
           STAGE: !Ref Stage
-
-  HireAFriendSaveEmailsFunctionStaging:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./
-      Handler: app.lambdaHandler
-      Runtime: nodejs18.x
-      Policies: !Ref S3BucketPolicy
-      Events:
-        HireAFriendApiStaging:
-           Type: Api
-           Properties:
-            Path: /getemails
-            Method: POST
-            RestApiId: !Ref ApiDeploymentStaging
-      Environment:
-        Variables:
-          STAGE: !Ref Stage
-
-  HireAFriendSaveEmailsFunctionProduction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./
-      Handler: app.lambdaHandler
-      Runtime: nodejs18.x
-      Policies: !Ref S3BucketPolicy
-      Events:
-        HireAFriendApiProduction:
-           Type: Api
-           Properties:
-            Path: /getemails
-            Method: POST
-            RestApiId: !Ref ApiDeploymentProduction
-      Environment:
-        Variables:
-          STAGE: !Ref Stage
-  ApiDeploymentDevelop:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Stage
-  ApiDeploymentStaging:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Stage
-  ApiDeploymentProduction:
+  ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage

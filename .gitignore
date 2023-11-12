@@ -1,4 +1,6 @@
 /node_modules
 /samconfig.toml
 /packaged.development.yaml
+/packaged.staging.yaml
+/packaged.production.yaml
 /.aws-sam
