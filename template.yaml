@@ -41,11 +41,33 @@ Resources:
            Properties:
             Path: /getemails
             Method: POST
+            RestApiId: !Ref ApiDeploymentDevelop
+      Events:
+        HireAFriendApi:
+           Type: Api
+           Properties:
+            Path: /getemails
+            Method: POST
+            RestApiId: !Ref ApiDeploymentStaging
+      Events:
+        HireAFriendApi:
+           Type: Api
+           Properties:
+            Path: /getemails
+            Method: POST
             RestApiId: !Ref ApiDeployment
       Environment:
         Variables:
           STAGE: !Ref Stage
-  ApiDeployment:
+  ApiDeploymentDevelop:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+  ApiDeploymentStaging:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+  ApiDeploymentProduction:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
