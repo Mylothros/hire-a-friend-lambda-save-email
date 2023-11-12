@@ -55,7 +55,7 @@ Resources:
            Properties:
             Path: /getemails
             Method: POST
-            RestApiId: !Ref ApiDeployment
+            RestApiId: !Ref ApiDeploymentProduction
       Environment:
         Variables:
           STAGE: !Ref Stage
