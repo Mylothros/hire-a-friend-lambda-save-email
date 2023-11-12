@@ -28,7 +28,7 @@ Globals:
       AllowOrigin: "'*'"
 
 Resources:
-  HireAFriendSaveEmailsFunction:
+  HireAFriendSaveEmailsFunctionDevelop:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
@@ -42,6 +42,17 @@ Resources:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeploymentDevelop
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+
+  HireAFriendSaveEmailsFunctionStaging:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Policies: !Ref S3BucketPolicy
       Events:
         HireAFriendApiStaging:
            Type: Api
@@ -49,6 +60,17 @@ Resources:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeploymentStaging
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+
+  HireAFriendSaveEmailsFunctionProduction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Policies: !Ref S3BucketPolicy
       Events:
         HireAFriendApiProduction:
            Type: Api
