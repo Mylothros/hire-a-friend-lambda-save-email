@@ -36,21 +36,21 @@ Resources:
       Runtime: nodejs18.x
       Policies: !Ref S3BucketPolicy
       Events:
-        HireAFriendApi:
+        HireAFriendApiDevelop:
            Type: Api
            Properties:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeploymentDevelop
       Events:
-        HireAFriendApi:
+        HireAFriendApiStaging:
            Type: Api
            Properties:
             Path: /getemails
             Method: POST
             RestApiId: !Ref ApiDeploymentStaging
       Events:
-        HireAFriendApi:
+        HireAFriendApiProduction:
            Type: Api
            Properties:
             Path: /getemails
