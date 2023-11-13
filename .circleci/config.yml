@@ -11,19 +11,23 @@ executors:
       - image: hashicorp/terraform:1.3.9
 
 aliases:
-  - &show-current-branch-name
-    run:
-      name: Show current branch
-      command: echo ${CIRCLE_BRANCH}
   - &restore-cache
     restore_cache:
       keys: 
         - app-{{ checksum "package.json" }}
         - app-
-  - &install-dependencies
+  - &install-dependencies-save-email
     run:
       name: Install dependecies
       command: |
+        cd lambda-save-email
+        mkdir -p artifacts
+        npm install
+  - &install-dependencies-sendGrid
+    run:
+      name: Install dependecies
+      command: |
+        cd lambda-sendGrid
         mkdir -p artifacts
         npm install
   - &save-cache
@@ -38,37 +42,34 @@ aliases:
       command: |
         sudo apt-get -y -qq update
         sudo apt-get install -y awscli
-  - &build-project
-    run:
-      name: Build Project
-      command: |
-        npm install
-        zip ../build.zip -r * .[^.]*
-        echo "Build successful"
 jobs:
   deploy-to-aws-lambda:
     executor: app-executor
     steps:
       - checkout
+      - *save-cache
       - *restore-cache
-      - *install-dependencies
+      - *install-dependencies-save-email
       - *install-aws-cli
       - run:
           name: Deploy to aws lambda
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
               then
+                cd lambda-save-email
                 export STAGE="Production"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.production.yaml
                 aws cloudformation deploy --template-file packaged.production.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
                 aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
               then
+                cd lambda-save-email
                 export STAGE="Staging"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.staging.yaml
                 aws cloudformation deploy --template-file packaged.staging.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
                 aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             else
+              cd lambda-save-email
               export STAGE="Develop"
               aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
               aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-develop --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Develop S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
