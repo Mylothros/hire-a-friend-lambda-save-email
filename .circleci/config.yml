@@ -14,7 +14,7 @@ aliases:
   - &restore-cache
     restore_cache:
       keys: 
-        - app-{{ checksum "package.json" }}
+        - app-{{ checksum "./lambda-save-email/package.json" }}
         - app-
   - &install-dependencies-save-email
     run:
@@ -33,7 +33,7 @@ aliases:
   - &save-cache
     save_cache:
       paths: 
-        - node_modules
+        - ./node_modules/lambda-save-email
       key: app-{{ checksum "package.json" }}
   - &install-aws-cli
     run:
