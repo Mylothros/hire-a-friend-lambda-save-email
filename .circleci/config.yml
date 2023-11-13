@@ -34,7 +34,7 @@ aliases:
     save_cache:
       paths: 
         - ./node_modules/lambda-save-email
-      key: app-{{ checksum "package.json" }}
+      key: app-{{ checksum "./lambda-save-email/package.json" }}
   - &install-aws-cli
     run:
       name: Installing aws cli
