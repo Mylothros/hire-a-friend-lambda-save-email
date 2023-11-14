@@ -1,14 +1,14 @@
-lambda-sendGrid/node_modules
-lambda-sendGrid/samconfig.toml
-lambda-sendGrid/packaged.development.yaml
-lambda-sendGrid/packaged.staging.yaml
-lambda-sendGrid/packaged.production.yaml
-lambda-sendGrid/.aws-sam
-lambda-sendGrid/lambda-sendGrid.zip
+lambdas/lambda-sendGrid/node_modules
+lambdas/lambda-sendGrid/samconfig.toml
+lambdas/lambda-sendGrid/packaged.development.yaml
+lambdas/lambda-sendGrid/packaged.staging.yaml
+lambdas/lambda-sendGrid/packaged.production.yaml
+lambdas/lambda-sendGrid/.aws-sam
+lambdas/lambda-sendGrid/lambda-sendGrid.zip
 
-lambda-save-email/node_modules
-lambda-save-email/samconfig.toml
-lambda-save-email/packaged.development.yaml
-lambda-save-email/packaged.staging.yaml
-lambda-save-email/packaged.production.yaml
-lambda-save-email/.aws-sam
+lambdas/lambda-save-email/node_modules
+lambdas/lambda-save-email/samconfig.toml
+lambdas/lambda-save-email/packaged.development.yaml
+lambdas/lambda-save-email/packaged.staging.yaml
+lambdas/lambda-save-email/packaged.production.yaml
+lambdas/lambda-save-email/.aws-sam
