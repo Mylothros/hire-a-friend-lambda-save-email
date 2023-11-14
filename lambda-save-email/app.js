@@ -1,5 +1,7 @@
 const AWS = require("aws-sdk");
 
+const lambda = new AWS.Lambda({ region: "us-east-1" });
+
 const upload = async (data) => {
   try {
     const s3 = new AWS.S3({ region: "us-east-1" });
@@ -36,6 +38,21 @@ const upload = async (data) => {
   }
 };
 
+const invokeSendGridLambda = async (data) => {
+  const params = {
+    FunctionName: "hire-a-friend-send-grid",
+    InvocationType: "Event",
+    Payload: JSON.stringify(data)
+  };
+
+  try {
+    await lambda.invoke(params).promise();
+  } catch (e) {
+    console.error("Error invoking Lambda function: ", e);
+    throw e;
+  }
+}
+
 exports.lambdaHandler = async (event) => {
   try {
     if (event.httpMethod !== "POST" || !event.body) {
@@ -43,6 +60,7 @@ exports.lambdaHandler = async (event) => {
     }
     const data = event.body;
     await upload(data);
+    await invokeSendGridLambda(data);
     return {
       statusCode: 200,
       headers: {
