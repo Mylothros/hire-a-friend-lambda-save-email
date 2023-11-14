@@ -70,6 +70,7 @@ jobs:
             fi
             cd ..
             cd ./lambda-sendGrid
+            npm install
             sudo apt-get update && sudo apt-get install -y zip
             zip -r lambda-sendGrid.zip ./*
             aws lambda update-function-code --function-name hire-a-friend-send-grid --zip-file fileb://lambda-sendGrid.zip --region us-east-1
@@ -82,8 +83,8 @@ jobs:
                   echo "Lambda function update failed!"
                   exit 1
               else
-                  echo "Waiting for Lambda function update to complete..."
-                  sleep 10  # Wait for 10 seconds before checking again
+                  echo "Waiting for Lambda function update to complete."
+                  sleep 10
                 fi
             done
             
