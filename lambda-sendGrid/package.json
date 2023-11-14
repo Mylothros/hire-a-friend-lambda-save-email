@@ -1,0 +1,16 @@
+{
+    "name": "hire-a-friend-emails-save",
+    "version": "1.0.0",
+    "description": "Save emails in s3",
+    "main": "app.js",
+    "author": "Hire A Friend",
+    "license": "MIT",
+    "dependencies": {
+      "@sendgrid/mail": "^7.4.2"
+    },
+    "scripts": {
+      "build": "sam build --template template.yaml",
+      "run": "sam local start-api",
+      "debug": "sam local start-api -d 5678 --template template.yaml"
+    }
+}
