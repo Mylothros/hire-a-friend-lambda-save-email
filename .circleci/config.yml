@@ -68,6 +68,10 @@ jobs:
               aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-develop --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Develop S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
               aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             fi
+            cd ..
+            cd ./lambda-sendGrid
+            sudo apt-get update && sudo apt-get install -y zip
+            zip -r lambda-sendGrid.zip ./*
             Compress-Archive -Path .\* -DestinationPath lambda-sendGrid.zip
             aws lambda update-function-code --function-name hire-a-friend-send-grid --zip-file fileb://lambda-sendGrid.zip
             aws lambda update-function-configuration --function-name hire-a-friend-send-grid --environment "Variables={SEND_GRID_API_KEY=${SEND_GRID_API_KEY},SEND_GRID_TEMPLATE=${SEND_GRID_TEMPLATE}}"
