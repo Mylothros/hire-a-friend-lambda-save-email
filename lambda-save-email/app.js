@@ -42,7 +42,7 @@ const invokeSendGridLambda = async (data) => {
   const params = {
     FunctionName: "hire-a-friend-send-grid",
     InvocationType: "Event",
-    Payload: JSON.stringify(data)
+    Payload: data
   };
 
   try {
