@@ -53,20 +53,17 @@ jobs:
                 export STAGE="Production"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.production.yaml
                 aws cloudformation deploy --template-file packaged.production.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
-                aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
               then
                 cd lambda-save-email
                 export STAGE="Staging"
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.staging.yaml
                 aws cloudformation deploy --template-file packaged.staging.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
-                aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             else
               cd lambda-save-email
               export STAGE="Develop"
               aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
               aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-develop --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Develop S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
-              aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
             fi
             cd ..
             cd ./lambda-sendGrid
@@ -89,6 +86,7 @@ jobs:
             done
             
             aws lambda update-function-configuration --function-name hire-a-friend-send-grid --environment "Variables={SEND_GRID_API_KEY=${SEND_GRID_API_KEY},SEND_GRID_TEMPLATE=${SEND_GRID_TEMPLATE}}" --region us-east-1
+            aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
 workflows:
   build_and_deploy:
     jobs:
