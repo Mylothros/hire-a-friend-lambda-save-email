@@ -73,6 +73,20 @@ jobs:
             sudo apt-get update && sudo apt-get install -y zip
             zip -r lambda-sendGrid.zip ./*
             aws lambda update-function-code --function-name hire-a-friend-send-grid --zip-file fileb://lambda-sendGrid.zip --region us-east-1
+            while true; do
+              status=$(aws lambda get-function --function-name hire-a-friend-send-grid --query 'Configuration.LastUpdateStatus' --output text --region us-east-1)
+              if [ "$status" == "Successful" ]; then
+                  echo "Lambda function update successful!"
+                  break
+              elif [ "$status" == "Failed" ]; then
+                  echo "Lambda function update failed!"
+                  exit 1
+              else
+                  echo "Waiting for Lambda function update to complete..."
+                  sleep 10  # Wait for 10 seconds before checking again
+                fi
+            done
+            
             aws lambda update-function-configuration --function-name hire-a-friend-send-grid --environment "Variables={SEND_GRID_API_KEY=${SEND_GRID_API_KEY},SEND_GRID_TEMPLATE=${SEND_GRID_TEMPLATE}}" --region us-east-1
 workflows:
   build_and_deploy:
