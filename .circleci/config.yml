@@ -84,7 +84,6 @@ jobs:
                   sleep 10
                 fi
             done
-            
             aws lambda update-function-configuration --function-name hire-a-friend-send-grid --environment "Variables={SEND_GRID_API_KEY=${SEND_GRID_API_KEY},SEND_GRID_TEMPLATE=${SEND_GRID_TEMPLATE}}" --region us-east-1
             aws s3 rm s3://$AWS_BUCKET_NAME/ --exclude "emails-Develop" --exclude "emails-Production" --exclude "emails-Staging" --recursive
 workflows:
