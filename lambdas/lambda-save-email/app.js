@@ -65,7 +65,7 @@ exports.lambdaHandler = async (event) => {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": process.env.URL,
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST,OPTIONS"
     },
       body: JSON.stringify({ message: "Data uploaded successfully" }),
@@ -76,7 +76,7 @@ exports.lambdaHandler = async (event) => {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": process.env.URL,
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST,OPTIONS"
     },
       body: JSON.stringify({ error: error.message || "Internal Server Error" }),
