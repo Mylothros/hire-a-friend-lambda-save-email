@@ -16,6 +16,10 @@ Parameters:
     Type: String
     Description: S3 policy for writing orders objects
     Default: arn:aws:iam::173088506843:policy/HireAFriendS3Policy
+  URL:
+    Type: String
+    Description: Allow origin
+    Default: http://localhost:8000
 
 Globals:
   Function:
@@ -31,7 +35,7 @@ Resources:
   HireAFriendSaveEmailsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ./
+      CodeUri: ./lambdas/lambda-save-email
       Handler: app.lambdaHandler
       Runtime: nodejs18.x
       Policies: !Ref S3BucketPolicy
@@ -45,6 +49,7 @@ Resources:
       Environment:
         Variables:
           STAGE: !Ref Stage
+          URL: !Ref URL
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:

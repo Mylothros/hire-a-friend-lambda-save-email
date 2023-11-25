@@ -8,7 +8,7 @@
       //"preLaunchTask": "Debug Hire-A-Friend-Lambda-Save-Emails Lambda Function",
       "port": 5678,
       "address": "localhost",
-      "localRoot": "${workspaceRoot}/",
+      "localRoot": "${workspaceRoot}/lambda-save-email",
       "remoteRoot": "/var/task",
       "protocol": "inspector",
       "skipFiles": [
