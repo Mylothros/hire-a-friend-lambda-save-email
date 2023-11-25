@@ -19,7 +19,7 @@ Parameters:
   URL:
     Type: String
     Description: Allow origin
-    Default: http://localhost:8000
+    Default: http://localhost:3000
 
 Globals:
   Function:
