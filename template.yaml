@@ -16,10 +16,6 @@ Parameters:
     Type: String
     Description: S3 policy for writing orders objects
     Default: arn:aws:iam::173088506843:policy/HireAFriendS3Policy
-  URL:
-    Type: String
-    Description: Allow origin
-    Default: http://localhost:3000
 
 Globals:
   Function:
@@ -49,7 +45,6 @@ Resources:
       Environment:
         Variables:
           STAGE: !Ref Stage
-          URL: !Ref URL
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
