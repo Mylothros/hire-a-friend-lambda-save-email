@@ -16,7 +16,10 @@ Parameters:
     Type: String
     Description: S3 policy for writing orders objects
     Default: arn:aws:iam::173088506843:policy/HireAFriendS3Policy
-
+  URL:
+    Type: String
+    Description: AllowOrigin
+    Default: localhost:8000
 Globals:
   Function:
     Timeout: 3
