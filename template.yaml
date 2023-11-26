@@ -29,7 +29,7 @@ Globals:
     Cors:
       AllowMethods: "'POST,OPTIONS'"
       AllowHeaders: "'*'"
-      AllowOrigin: !Ref URL
+      AllowOrigin: "'*'"
 
 Resources:
   HireAFriendSaveEmailsFunction:
