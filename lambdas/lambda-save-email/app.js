@@ -68,7 +68,7 @@ exports.lambdaHandler = async (event) => {
     if (!allowedOrigins.includes(requestOrigin)) {
       return {
         statusCode: 403, // Forbidden
-        body: JSON.stringify({ error: "Origin not allowed" }),
+        body: JSON.stringify({ error: "allowedOrigins:" + allowedOrigins + "requestOrigin" + requestOrigin}),
       };
     }
     await upload(data);
