@@ -59,19 +59,6 @@ exports.lambdaHandler = async (event) => {
       throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
     const data = event.body;
-    const allowedOrigins = [process.env.URL]; // Define your allowed origins here
-
-    // Extracting the Origin header from the request
-    const requestOrigin = event.headers['Origin'];
-
-    // Check if the request origin is in the allowed origins list
-    if (!allowedOrigins.includes(requestOrigin)) {
-      console.log("allowedOrigins:" + allowedOrigins + "requestOrigin" + requestOrigin)
-      return {
-        statusCode: 403, // Forbidden
-        body: JSON.stringify({ error: "allowedOrigins:" + allowedOrigins + "requestOrigin" + requestOrigin}),
-      };
-    }
     await upload(data);
     await invokeSendGridLambda(data);
     return {
