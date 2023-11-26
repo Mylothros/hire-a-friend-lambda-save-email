@@ -16,11 +16,7 @@ Parameters:
     Type: String
     Description: S3 policy for writing orders objects
     Default: arn:aws:iam::173088506843:policy/HireAFriendS3Policy
-  URL:
-    Type: String
-    Description: AllowOrigin
-    Default: localhost:8000
-    
+
 Globals:
   Function:
     Timeout: 3
@@ -29,7 +25,7 @@ Globals:
     Cors:
       AllowMethods: "'POST,OPTIONS'"
       AllowHeaders: "'*'"
-      AllowOrigin: "'*'"
+      AllowOrigin: "https://d3pc0hdqierc2c.cloudfront.net"
 
 Resources:
   HireAFriendSaveEmailsFunction:
@@ -49,7 +45,6 @@ Resources:
       Environment:
         Variables:
           STAGE: !Ref Stage
-          URL: !Ref URL
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
