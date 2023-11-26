@@ -25,7 +25,7 @@ Globals:
     Cors:
       AllowMethods: "'POST,OPTIONS'"
       AllowHeaders: "'*'"
-      AllowOrigin: "https://d3pc0hdqierc2c.cloudfront.net"
+      AllowOrigin: "'https://d3pc0hdqierc2c.cloudfront.net'"
 
 Resources:
   HireAFriendSaveEmailsFunction:
