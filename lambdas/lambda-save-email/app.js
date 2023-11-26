@@ -66,6 +66,7 @@ exports.lambdaHandler = async (event) => {
 
     // Check if the request origin is in the allowed origins list
     if (!allowedOrigins.includes(requestOrigin)) {
+      console.log("allowedOrigins:" + allowedOrigins + "requestOrigin" + requestOrigin)
       return {
         statusCode: 403, // Forbidden
         body: JSON.stringify({ error: "allowedOrigins:" + allowedOrigins + "requestOrigin" + requestOrigin}),
