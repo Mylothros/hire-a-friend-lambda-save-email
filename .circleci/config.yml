@@ -20,8 +20,6 @@ aliases:
     run:
       name: Install dependecies
       command: |
-        sed -i -e "s#AllowOrigin: \"[^\"]*\"#AllowOrigin: $URL_API_DEVELOP#g" template.yaml
-        cat template.yaml
         cd lambdas/lambda-save-email
         mkdir -p artifacts
         npm install
@@ -72,6 +70,7 @@ jobs:
             else
               export STAGE="Develop"
               export URL=$URL_DEVELOP
+              sed -i -e "s#AllowOrigin: \"[^\"]*\"#AllowOrigin: $URL_API_GATEWAY_DEVELOP#g" template.yaml
               aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.development.yaml
               aws cloudformation deploy --template-file packaged.development.yaml --stack-name hire-a-friend-develop --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Develop S3BucketPolicy=$AWS_BUCKET_POLICY URL=$URL --region us-east-1 
             fi
