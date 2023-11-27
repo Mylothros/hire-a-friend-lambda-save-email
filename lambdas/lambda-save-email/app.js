@@ -55,6 +55,7 @@ const invokeSendGridLambda = async (data) => {
 
 exports.lambdaHandler = async (event) => {
   try {
+    console.log(event)
     if (event.httpMethod !== "POST" || !event.body) {
       throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
