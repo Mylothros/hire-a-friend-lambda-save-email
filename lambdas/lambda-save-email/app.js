@@ -55,11 +55,9 @@ const invokeSendGridLambda = async (data) => {
 
 exports.lambdaHandler = async (event) => {
   try {
-    if (event.httpMethod !== "POST" || !event.body) {
+    if (event.httpMethod !== "POST" || !event.body || event.headers.origin !== process.env.URL) {
       throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
-    console.log("event.header.origin: ", event.headers.origin, "process.env.URL: ",process.env.URL)
-    if(event.headers.origin === process.env.URL) {
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
@@ -72,7 +70,6 @@ exports.lambdaHandler = async (event) => {
       },
         body: JSON.stringify({ message: "Data uploaded successfully" }),
       };
-    }  
   } catch (error) {
     console.error("Error: ", error);
     return {
