@@ -20,6 +20,7 @@ aliases:
     run:
       name: Install dependecies
       command: |
+        sed -i "s/AllowOrigin: '''\*'''/AllowOrigin: '$URL_API_DEVELOP'/g" template.yaml
         cd lambdas/lambda-save-email
         mkdir -p artifacts
         npm install
@@ -60,13 +61,13 @@ jobs:
                 export STAGE="Production"
                 export URL=$URL_PRODUCTION
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.production.yaml
-                aws cloudformation deploy --template-file packaged.production.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
+                aws cloudformation deploy --template-file packaged.production.yaml --stack-name hire-a-friend-production --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Production S3BucketPolicy=$AWS_BUCKET_POLICY URL=$URL --region us-east-1 
             elif [ "${CIRCLE_BRANCH}" == "staging" ]
               then
                 export STAGE="Staging"
                 export URL=$URL_STAGING
                 aws cloudformation package --template-file template.yaml --s3-bucket $AWS_BUCKET_NAME --output-template-file packaged.staging.yaml
-                aws cloudformation deploy --template-file packaged.staging.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY --region us-east-1 
+                aws cloudformation deploy --template-file packaged.staging.yaml --stack-name hire-a-friend-staging --capabilities CAPABILITY_IAM --s3-bucket $AWS_BUCKET_NAME --parameter-overrides Stage=Staging S3BucketPolicy=$AWS_BUCKET_POLICY URL=$URL --region us-east-1 
             else
               export STAGE="Develop"
               export URL=$URL_DEVELOP
