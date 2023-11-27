@@ -20,7 +20,7 @@ aliases:
     run:
       name: Install dependecies
       command: |
-        sed -i "s/AllowOrigin: '''\*'''/AllowOrigin: '$URL_API_DEVELOP'/g" template.yaml
+        (Get-Content -Path template.yaml -Raw) -replace "AllowOrigin: '''\*'''", "AllowOrigin: '$env:URL_API_DEVELOP'" | Set-Content -Path template.yaml -Force
         cd lambdas/lambda-save-email
         mkdir -p artifacts
         npm install
