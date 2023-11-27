@@ -42,7 +42,6 @@ aliases:
       command: |
         sudo apt-get -y -qq update
         sudo apt-get install -y awscli
-        
 jobs:
   deploy-to-aws-lambda:
     executor: app-executor
