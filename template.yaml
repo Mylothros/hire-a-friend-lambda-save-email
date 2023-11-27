@@ -20,7 +20,7 @@ Parameters:
     Type: String
     Description: Allow origin url
     Default: "http://localhost:8000"
-    
+
 Globals:
   Function:
     Timeout: 3
@@ -49,6 +49,7 @@ Resources:
       Environment:
         Variables:
           STAGE: !Ref Stage
+          URL: !Ref URL
   ApiDeployment:
     Type: AWS::Serverless::Api
     Properties:
