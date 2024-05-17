@@ -57,12 +57,13 @@ exports.lambdaHandler = async (event) => {
   try {
     const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
     const origin = event.headers.origin;
+    console.log(allowedOrigins, origin)
     if (event.httpMethod !== "POST" || !event.body || !allowedOrigins.includes(origin)) {
       throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
     
     if (allowedOrigins.includes(origin)) {
-        console.log(allowedOrigins, origin)
+        
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
