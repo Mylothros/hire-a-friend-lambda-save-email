@@ -1,36 +1,101 @@
-const sgMail = require("@sendgrid/mail")
+const AWS = require("aws-sdk");
 
-const sendEmailInternal = async (event) => {
-    sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
-    msg = {
-        to: event.email,
-        from: 'hireafriend.team@gmail.com',
-        templateId: process.env.SEND_GRID_TEMPLATE,
-    } 
-    await sgMail.send(msg);
+const lambda = new AWS.Lambda({ region: "us-east-1" });
+
+const upload = async (data) => {
+  try {
+    const s3 = new AWS.S3({ region: "us-east-1" });
+    const bucketName = 'hire-a-friend-emails';
+    const objectKey = 'emails-' + process.env.STAGE + '.json';
+
+    try {
+      await s3.headObject({ Bucket: bucketName, Key: objectKey }).promise();
+    } catch (e) {
+      try {
+        await s3.putObject({
+          Bucket: bucketName,
+          Key: objectKey,
+          Body: data,
+          ContentType: "application/json",
+        }).promise();
+        return;
+      } 
+      catch(e) {
+        throw e;
+      }
+    }
+    const existingData = await s3.getObject({ Bucket: bucketName, Key: objectKey }).promise();
+    const existingDataBody = existingData.Body.toString('utf-8');
+    const updatedData = existingDataBody + '\n' + data;
+    await s3.putObject({
+      Bucket: bucketName,
+      Key: objectKey,
+      Body: updatedData,
+      ContentType: "application/json",
+    }).promise();
+  } catch (e) {
+    throw e;
+  }
+};
+
+const invokeSendGridLambda = async (data) => {
+  const params = {
+    FunctionName: "hire-a-friend-send-grid",
+    InvocationType: "Event",
+    Payload: data
+  };
+
+  try {
+    await lambda.invoke(params).promise();
+  } catch (e) {
+    console.error("Error invoking Lambda function: ", e);
+    throw e;
+  }
 }
 
-exports.handler = async (event) => {
-    let condition;
-    let status;
-    try {        
-        await sendEmailInternal(event);
-        condition = "Emails succeeded";
-        status = 200;
-    
-    } catch(error) {
-        console.error("Error trying send email internal: " + error.toString());  
-        condition = "Emails failed";
-        status = 404;
+exports.lambdaHandler = async (event) => {
+  try {
+    if (event.httpMethod !== "POST" || !event.body || event.headers.origin !== process.env.URL) {
+      throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
-    var response = {
-        statusCode: status,
+    const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
+    const origin = event.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+
+      const data = event.body;
+      await upload(data);
+      await invokeSendGridLambda(data);
+      return {
+        statusCode: 200,
         headers: {
-            "Access-Control-Allow-Headers" : "*",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST"
-        },
-        body : condition
+          "Access-Control-Allow-Headers" : "*",
+          "Access-Control-Allow-Origin": process.env.URL,
+          "Access-Control-Allow-Methods": "POST,OPTIONS"
+      },
+        body: JSON.stringify({ message: "Data uploaded successfully" }),
+      };
     }
-    return response;
-}
+    else {
+      return {
+        statusCode: 500,
+        headers: {
+          "Access-Control-Allow-Headers" : "*",
+          "Access-Control-Allow-Origin": process.env.URL,
+          "Access-Control-Allow-Methods": "POST,OPTIONS"
+      },
+        body: JSON.stringify({ error: error.message || "Internal Server Error" }),
+      };
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Headers" : "*",
+        "Access-Control-Allow-Origin": process.env.URL,
+        "Access-Control-Allow-Methods": "POST,OPTIONS"
+    },
+      body: JSON.stringify({ error: error.message || "Internal Server Error" }),
+    };
+  }
+};
