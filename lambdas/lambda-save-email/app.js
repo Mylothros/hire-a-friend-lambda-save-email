@@ -60,25 +60,30 @@ exports.lambdaHandler = async (event) => {
     if (event.httpMethod !== "POST" || !event.body || event.headers.origin !== process.env.URL) {
       throw new Error("Invalid request: Expected a POST request with a non-empty body.");
     }
+      const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
+      const origin = event.headers.origin;
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
+      if (allowedOrigins.includes(origin)) {
       return {
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Headers" : "*",
-          "Access-Control-Allow-Origin": process.env.URL,
+          "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Methods": "POST,OPTIONS"
       },
+      
         body: JSON.stringify({ message: "Data uploaded successfully" }),
       };
+    }
   } catch (error) {
     console.error("Error: ", error);
     return {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": process.env.URL,
+        "Access-Control-Allow-Origin": origin,
         "Access-Control-Allow-Methods": "POST,OPTIONS"
     },
       body: JSON.stringify({ error: error.message || "Internal Server Error" }),
