@@ -55,13 +55,14 @@ const invokeSendGridLambda = async (data) => {
 
 exports.lambdaHandler = async (event) => {
   try {
-    if (event.httpMethod !== "POST" || !event.body || event.headers.origin !== process.env.URL) {
-      throw new Error("Invalid request: Expected a POST request with a non-empty body.");
-    }
     const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
     const origin = event.headers.origin;
+    if (event.httpMethod !== "POST" || !event.body || !allowedOrigins.includes(origin)) {
+      throw new Error("Invalid request: Expected a POST request with a non-empty body.");
+    }
+    
     if (allowedOrigins.includes(origin)) {
-console.log(allowedOrigins, origin)
+        console.log(allowedOrigins, origin)
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
@@ -69,7 +70,7 @@ console.log(allowedOrigins, origin)
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Headers" : "*",
-          "Access-Control-Allow-Origin": process.env.URL,
+          "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Methods": "POST,OPTIONS"
       },
         body: JSON.stringify({ message: "Data uploaded successfully" }),
@@ -80,7 +81,7 @@ console.log(allowedOrigins, origin)
         statusCode: 500,
         headers: {
           "Access-Control-Allow-Headers" : "*",
-          "Access-Control-Allow-Origin": process.env.URL,
+          "Access-Control-Allow-Origin": origin,
           "Access-Control-Allow-Methods": "POST,OPTIONS"
       },
         body: JSON.stringify({ error: error.message || "Internal Server Error" }),
@@ -92,7 +93,7 @@ console.log(allowedOrigins, origin)
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": process.env.URL,
+        "Access-Control-Allow-Origin": origin,
         "Access-Control-Allow-Methods": "POST,OPTIONS"
     },
       body: JSON.stringify({ error: error.message || "Internal Server Error" }),
