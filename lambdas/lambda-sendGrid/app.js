@@ -16,7 +16,7 @@ const upload = async (data) => {
           Bucket: bucketName,
           Key: objectKey,
           Body: data,
-          ContentType: "application/json",
+          ContentType: "application/json"
         }).promise();
         return;
       } 
@@ -31,7 +31,7 @@ const upload = async (data) => {
       Bucket: bucketName,
       Key: objectKey,
       Body: updatedData,
-      ContentType: "application/json",
+      ContentType: "application/json"
     }).promise();
   } catch (e) {
     throw e;
@@ -55,15 +55,9 @@ const invokeSendGridLambda = async (data) => {
 
 exports.lambdaHandler = async (event) => {
   try {
-    const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
-    const origin = event.headers.origin;
-    console.log(allowedOrigins, origin)
-    // if (event.httpMethod !== "POST" || !event.body || !allowedOrigins.includes(origin)) {
-    //   throw new Error("Invalid request: Expected a POST request with a non-empty body.");
-    // }
-    
-    if (allowedOrigins.includes(origin)) {
-        
+    if (event.httpMethod !== "POST" || !event.body || event.headers.origin !== process.env.URL) {
+      throw new Error("Invalid request: Expected a POST request with a non-empty body.");
+    }
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
@@ -71,30 +65,18 @@ exports.lambdaHandler = async (event) => {
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Headers" : "*",
-          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Origin": process.env.URL,
           "Access-Control-Allow-Methods": "POST,OPTIONS"
       },
         body: JSON.stringify({ message: "Data uploaded successfully" }),
       };
-    }
-    else {
-      return {
-        statusCode: 500,
-        headers: {
-          "Access-Control-Allow-Headers" : "*",
-          "Access-Control-Allow-Origin": origin,
-          "Access-Control-Allow-Methods": "POST,OPTIONS"
-      },
-        body: JSON.stringify({ error: error.message || "Internal Server Error" }),
-      };
-    }
   } catch (error) {
     console.error("Error: ", error);
     return {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Headers" : "*",
-        "Access-Control-Allow-Origin": origin,
+        "Access-Control-Allow-Origin": process.env.URL,
         "Access-Control-Allow-Methods": "POST,OPTIONS"
     },
       body: JSON.stringify({ error: error.message || "Internal Server Error" }),
