@@ -61,7 +61,7 @@ exports.lambdaHandler = async (event) => {
     const allowedOrigins = ['https://www.hireafriend.co', 'https://hireafriend.co'];
     const origin = event.headers.origin;
     if (allowedOrigins.includes(origin)) {
-
+console.log(allowedOrigins, origin)
       const data = event.body;
       await upload(data);
       await invokeSendGridLambda(data);
