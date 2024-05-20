@@ -16,8 +16,7 @@ const upload = async (data) => {
           Bucket: bucketName,
           Key: objectKey,
           Body: data,
-          ContentType: "application/json",
-          ACL: 'public-read' //delete this in master branch
+          ContentType: "application/json"
         }).promise();
         return;
       } 
